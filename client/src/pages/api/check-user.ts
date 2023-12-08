@@ -10,12 +10,12 @@ const pool = new Pool({
 
 export default async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const { username, password } = req.body;
+    const { password } = req.body;
     const client = await pool.connect();
     try {
 
-      const findUserQuery = 'SELECT * FROM cars WHERE brand = $1 AND model = $2';
-      const user = await client.query(findUserQuery, [username, password]);
+      const findUserQuery = 'SELECT * FROM cars WHERE model = $1';
+      const user = await client.query(findUserQuery, [password]);
 
       client.release();
 

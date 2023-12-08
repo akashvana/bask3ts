@@ -16,7 +16,7 @@ export default async function createUserHandler(req: NextApiRequest, res: NextAp
       const client = await pool.connect();
       await client.query('BEGIN');
 
-      const createUserQuery = 'INSERT INTO cars (cars, model, year) VALUES ($1, $2, $3) RETURNING *';
+      const createUserQuery = 'INSERT INTO cars (brand, model) VALUES ($1, $2) RETURNING *';
       const newUser = await client.query(createUserQuery, [username, password]);
 
       await client.query('COMMIT');
