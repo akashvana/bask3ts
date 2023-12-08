@@ -30,4 +30,3 @@ export default async function getBasketById(req: NextApiRequest, res: NextApiRes
     res.status(405).json({ message: 'Method Not Allowed' });
   }
 }
-

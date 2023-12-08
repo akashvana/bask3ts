@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: 'your_username',
+  user: 'dev',
   host: 'localhost',
-  database: 'your_database_name',
-  password: 'your_password',
-  port: 5432, // Change it according to your configuration
+  database: 'bask3ts',
+  port: 5432,
 });
 
 export default async function createUserHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -17,7 +16,7 @@ export default async function createUserHandler(req: NextApiRequest, res: NextAp
       const client = await pool.connect();
       await client.query('BEGIN');
 
-      const createUserQuery = 'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *';
+      const createUserQuery = 'INSERT INTO cars (cars, model, year) VALUES ($1, $2, $3) RETURNING *';
       const newUser = await client.query(createUserQuery, [username, password]);
 
       await client.query('COMMIT');

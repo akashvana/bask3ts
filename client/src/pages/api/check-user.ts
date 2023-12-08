@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 
 const pool = new Pool({
-  user: 'ameygupta',
-  host: 'localhost',
-  database: 'bask3ts',
-  password: 'amey',
-  port: 5432, // Change it according to your configuration
+    user: 'dev',
+    host: 'localhost',
+    database: 'bask3ts',
+    port: 5432, 
 });
 
 export default async function loginHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -15,7 +14,7 @@ export default async function loginHandler(req: NextApiRequest, res: NextApiResp
     const client = await pool.connect();
     try {
 
-      const findUserQuery = 'SELECT * FROM users WHERE username = $1 AND password = $2';
+      const findUserQuery = 'SELECT * FROM cars WHERE brand = $1 AND model = $2';
       const user = await client.query(findUserQuery, [username, password]);
 
       client.release();
