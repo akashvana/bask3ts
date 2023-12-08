@@ -19,7 +19,7 @@ const deployDCASessionValidationModule: DeployFunction = async function (hre: Ha
   });
 
   // Optionally, you can get the deployed contract instance if you need to interact with it immediately after deployment
-  const dcaSessionValidationModule = await hre.ethers.getContractAt("DCASessionValidationModule", deployer);
+  const dcaSessionValidationModule = await hre.ethers.getContract("DCASessionValidationModule", deployer);
   console.log("DCASessionValidationModule deployed to:", dcaSessionValidationModule.address);
 };
 

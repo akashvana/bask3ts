@@ -2,11 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
 
 const pool = new Pool({
-    user: 'ameygupta',
+    user: 'dev',
     host: 'localhost',
     database: 'bask3ts',
-    password: 'amey',
-    port: 5432, // Change it according to your configuration
+    port: 5432,
 });
 
 export default async function getBasketById(req: NextApiRequest, res: NextApiResponse) {
@@ -18,7 +17,7 @@ export default async function getBasketById(req: NextApiRequest, res: NextApiRes
     try {
       const client = await pool.connect();
 
-      const getBasketQuery = 'SELECT * FROM basket_master WHERE basket_id = $1';
+      const getBasketQuery = 'SELECT * FROM cars WHERE brand = $1';
       const result = await client.query(getBasketQuery, [basketId]);
 
       client.release();
