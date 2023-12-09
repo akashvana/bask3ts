@@ -29,28 +29,32 @@ contract DCASessionValidationModule is ISessionValidationModule {
         bytes calldata _sessionKeyData,
         bytes calldata /*_callSpecificData*/
     ) external virtual override returns (address) {
-        address sessionKey = abi.decode(_sessionKeyData, (address));
-
+        (address sessionKey, uint256 afterDays )  = abi.decode(_sessionKeyData, (address, uint256));
+        
         return sessionKey;
     }
 
-    /**
-     * @dev validates if the _op (UserOperation) matches the SessionKey permissions
-     * and that _op has been signed by this SessionKey
-     * Please mind the decimals of your exact token when setting maxAmount
-     * @param _op User Operation to be validated.
-     * @param _userOpHash Hash of the User Operation to be validated.
-     * @param _sessionKeyData SessionKey data, that describes sessionKey permissions
-     * @param _sessionKeySignature Signature over the the _userOpHash.
-     * @return true if the _op is valid, false otherwise.
-     */
+
+    function isSessionActive(uint256 startTime, uint256 interval, uint256 duration) public view returns (bool){
+        uint256 timeSinceStart = block.timestamp - startTime;
+        uint256 currentCycle = timeSinceStart / interval;
+        uint256 cycleStart = startTime + currentCycle * interval;
+        uint256 cycleEnd = cycleStart + duration;
+
+        return block.timestamp >= cycleStart && block.timestamp <= cycleEnd;
+    }
+
     function validateSessionUserOp(
         UserOperation calldata _op,
         bytes32 _userOpHash,
         bytes calldata _sessionKeyData,
         bytes calldata _sessionKeySignature
-    ) external pure override returns (bool) {
-        address sessionKey = abi.decode(_sessionKeyData, (address));
+    ) external view override returns (bool) {
+        ( address sessionKey, uint256 daysAfter )  = abi.decode(_sessionKeyData, (address, uint256));
+
+        uint256 interval = daysAfter * 1 days;
+        uint256 duration = 1 days;
+        uint256 startTime = block.timestamp - (block.timestamp % interval); // Align start time with the first cycle
 
         return
             ECDSA.recover(
