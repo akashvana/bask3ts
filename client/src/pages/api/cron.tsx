@@ -23,16 +23,16 @@ export default async function cronHandler(req: NextApiRequest, res: NextApiRespo
       const rows = await client.query(selectQuery);
 
       for (const row of rows.rows) {
-        const { user_id, lasttransactiondate, repeatduration } = row;
+        const { session_key, lasttransactiondate, repeatduration } = row;
         const nextTransactionDate = new Date(lasttransactiondate);
         nextTransactionDate.setDate(nextTransactionDate.getDate() + repeatduration);
 
         if (currentDate === nextTransactionDate.toISOString().split('T')[0]) {
-          const updateQuery = `UPDATE user_master SET lastTransactionDate = '${currentDate}' WHERE user_id = ${user_id}`;
+          const updateQuery = `UPDATE session_master SET lastTransactionDate = '${currentDate}' WHERE session_key = ${session_key}`;
           await client.query(updateQuery);
 
           const response = await axios.put(apiUrl);
-          console.log(`User ID ${user_id}: API called. Response: ${response.status}`);
+          console.log(`User ID ${session_key}: API called. Response: ${response.status}`);
         }
       }
 
