@@ -13,25 +13,17 @@ export default async function createUser(req: NextApiRequest, res: NextApiRespon
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    const { walletAddress, sessionKey } = req.body;
+    const { walletAddress} = req.body;
 
-    if (!walletAddress || !sessionKey) {
-        return res.status(400).json({ message: 'walletAddress, and sessionKey are required' });
+    if (!walletAddress) {
+        return res.status(400).json({ message: 'walletAddress is required' });
     }
 
     try {
         const client = await pool.connect();
 
-        const checkUserQuery = 'SELECT * FROM user_master WHERE wallet_address = $1';
-        const checkResult = await client.query(checkUserQuery, [walletAddress]);
-
-        if (checkResult.rows.length > 0) {
-            client.release();
-            return res.status(409).json({ message: 'User with provided username, email, or phone already exists' });
-        }
-
-        const insertUserQuery = 'INSERT INTO user_master (wallet_address, sessionKey, sessionActive) VALUES ($1, $2, $3)';
-        await client.query(insertUserQuery, [walletAddress, sessionKey, true]);
+        const insertUserQuery = 'INSERT INTO user_master (wallet_address) VALUES ($1)';
+        await client.query(insertUserQuery, [walletAddress]);
         client.release();
 
         res.status(201).json({ message: 'User created successfully' });

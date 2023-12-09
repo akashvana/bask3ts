@@ -25,13 +25,20 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
         const client = await pool.connect();
 
         // Update the sessionKey and set sessionActive to true for the given user
-        const updateQuery = 'UPDATE user_master SET sessionKey = $1, sessionActive = true WHERE username = $2';
+        const updateQuery = 'UPDATE user_master SET sessionKey = $1, sessionActive = true WHERE wallet_address = $2';
         const result = await client.query(updateQuery, [sessionKey, walletAddress]);
         client.release();
 
         if (result.rowCount === 0) {
             // No user was found with the given username
             return res.status(404).json({ message: 'User not found' });
+        }
+
+        const setQuery = 'INSERT INTO session_master (sessionKey, isActive) values ($1, $2)';
+        const result2 = await client.query(updateQuery, [sessionKey, true]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'session not created for user' });
         }
 
         res.status(200).json({ message: 'Session updated successfully' });

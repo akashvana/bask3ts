@@ -15,18 +15,18 @@ export default async function getSessionKey(req: NextApiRequest, res: NextApiRes
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    const { username } = req.query;
+    const { walletAddress } = req.body;
 
-    if (!username) {
-        return res.status(400).json({ message: 'Username is required' });
+    if (!walletAddress) {
+        return res.status(400).json({ message: 'Wallet Address is required' });
     }
 
     try {
         const client = await pool.connect();
 
         // Retrieve the sessionKey for the user if sessionActive is true
-        const getSessionKeyQuery = 'SELECT sessionKey FROM user_master WHERE username = $1 AND sessionActive = $2';
-        const result = await client.query(getSessionKeyQuery, [username, true]);
+        const getSessionKeyQuery = 'SELECT sessionKey FROM user_master WHERE wallet_address = $1 AND sessionActive = $2';
+        const result = await client.query(getSessionKeyQuery, [walletAddress, true]);
 
         client.release();
 
