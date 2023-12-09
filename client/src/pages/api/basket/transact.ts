@@ -30,11 +30,6 @@ export default async function divideAmountHandler(req: NextApiRequest, res: Next
 
       const basket = basketResult.rows[0];
 
-      // Check if amount is below minimum_amount
-      if (amount < basket.minimum_amount) {
-        return res.status(400).json({ success: false, message: 'Amount is below the minimum required amount' });
-      }
-
       // Extract holdings from the basket details
       const holdings = basket.holdings;
 

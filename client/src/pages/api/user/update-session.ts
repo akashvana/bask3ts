@@ -15,10 +15,10 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    const { username, sessionKey } = req.body;
+    const { walletAddress, sessionKey } = req.body;
 
-    if (!username || !sessionKey) {
-        return res.status(400).json({ message: 'Username and sessionKey are required' });
+    if (!walletAddress || !sessionKey) {
+        return res.status(400).json({ message: 'walletAddress and sessionKey are required' });
     }
 
     try {
@@ -26,7 +26,7 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
 
         // Update the sessionKey and set sessionActive to true for the given user
         const updateQuery = 'UPDATE user_master SET sessionKey = $1, sessionActive = true WHERE username = $2';
-        const result = await client.query(updateQuery, [sessionKey, username]);
+        const result = await client.query(updateQuery, [sessionKey, walletAddress]);
         client.release();
 
         if (result.rowCount === 0) {
