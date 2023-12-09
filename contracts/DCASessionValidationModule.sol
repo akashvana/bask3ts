@@ -34,18 +34,8 @@ contract DCASessionValidationModule is ISessionValidationModule {
         return sessionKey;
     }
 
-    /**
-     * @dev validates if the _op (UserOperation) matches the SessionKey permissions
-     * and that _op has been signed by this SessionKey
-     * Please mind the decimals of your exact token when setting maxAmount
-     * @param _op User Operation to be validated.
-     * @param _userOpHash Hash of the User Operation to be validated.
-     * @param _sessionKeyData SessionKey data, that describes sessionKey permissions
-     * @param _sessionKeySignature Signature over the the _userOpHash.
-     * @return true if the _op is valid, false otherwise.
-     */
 
-    function isSessionActive(uint256 startTime, uint256 interval, uint256 duration) view returns (bool){
+    function isSessionActive(uint256 startTime, uint256 interval, uint256 duration) public view returns (bool){
         uint256 timeSinceStart = block.timestamp - startTime;
         uint256 currentCycle = timeSinceStart / interval;
         uint256 cycleStart = startTime + currentCycle * interval;
