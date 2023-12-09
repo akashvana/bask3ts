@@ -29,9 +29,8 @@ contract DCASessionValidationModule is ISessionValidationModule {
         bytes calldata _sessionKeyData,
         bytes calldata /*_callSpecificData*/
     ) external virtual override returns (address) {
-        ( address sessionKey, uint256 expiryTimestamp )  = abi.decode(_sessionKeyData, (address, uint256));
+        (address sessionKey, uint256 afterDays )  = abi.decode(_sessionKeyData, (address, uint256));
         
-        require (block.timestamp < expiryTimestamp, "Your session key has already expired.");
         return sessionKey;
     }
 
@@ -45,17 +44,27 @@ contract DCASessionValidationModule is ISessionValidationModule {
      * @param _sessionKeySignature Signature over the the _userOpHash.
      * @return true if the _op is valid, false otherwise.
      */
+
+    function isSessionActive(uint256 startTime, uint256 interval, uint256 duration) view returns (bool){
+        uint256 timeSinceStart = block.timestamp - startTime;
+        uint256 currentCycle = timeSinceStart / interval;
+        uint256 cycleStart = startTime + currentCycle * interval;
+        uint256 cycleEnd = cycleStart + duration;
+
+        return block.timestamp >= cycleStart && block.timestamp <= cycleEnd;
+    }
+
     function validateSessionUserOp(
         UserOperation calldata _op,
         bytes32 _userOpHash,
         bytes calldata _sessionKeyData,
         bytes calldata _sessionKeySignature
     ) external view override returns (bool) {
-        ( address sessionKey, uint256 expiryTimestamp )  = abi.decode(_sessionKeyData, (address, uint256));
+        ( address sessionKey, uint256 daysAfter )  = abi.decode(_sessionKeyData, (address, uint256));
 
-        if(expiryTimestamp < block.timestamp){
-            revert("Your session key has already expired. ");
-        }
+        uint256 interval = daysAfter * 1 days;
+        uint256 duration = 1 days;
+        uint256 startTime = block.timestamp - (block.timestamp % interval); // Align start time with the first cycle
 
         return
             ECDSA.recover(
