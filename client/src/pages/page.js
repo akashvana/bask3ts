@@ -20,10 +20,10 @@ export default function Home() {
     <Mymodal />
     </div>
     <div className="col-8">
-    You don’t have to be a digital marketing pro to know how important a website is to modern business. As both a digital interface for delivering products and services and a vehicle for generating leads, your website needs to look good. If you want to deliver a smooth customer experience and look good while doing it, a web designer can help.
+    view existing baskets
     <br />
     <Link href="/buckets" classNameName="hover:text-blue-200">
-    <button type="button" className="btn btn-primary">Launch</button>
+    <button type="button" className="btn btn-primary">view</button>
     </Link>
     </div>
   </div>
