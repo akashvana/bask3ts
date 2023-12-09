@@ -10,9 +10,7 @@ const pool = new Pool({
 });
 
 type UserData = {
-    username: string;
-    email: string;
-    phone: string;
+    walletAddress: string;
     sessionActive: boolean;
     sessionKey: string;
     holdings: object;
@@ -20,26 +18,23 @@ type UserData = {
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UserData | { message: string }>) {
     if (req.method === 'POST') {
-        const { username, password } = req.body;
+        const { walletAddress } = req.query;
 
         // Basic validation
-        if (!username || !password) {
-            res.status(400).json({ message: 'Username and password are required' });
+        if (!walletAddress) {
+            res.status(400).json({ message: 'Wallet Address are required' });
             return;
         }
 
         const client = await pool.connect();
 
         try {
-            // Query the database
-            const query = 'SELECT * FROM user_master WHERE username = $1 AND password = $2';
-            const result = await client.query<UserData>(query, [username, password]);
+            const query = 'SELECT * FROM user_master WHERE walletAddress = $1';
+            const result = await client.query<UserData>(query, [walletAddress]);
 
             if (result.rows.length > 0) {
-                // Return the user data
                 res.status(200).json(result.rows[0]);
             } else {
-                // No user found
                 res.status(404).json({ message: 'User not found' });
             }
         } catch (error) {
@@ -49,7 +44,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
             client.release();
         }
     } else {
-        // Handle non-POST requests
         res.setHeader('Allow', ['POST']);
         res.status(405).end(`Method ${req.method} Not Allowed`);
     }

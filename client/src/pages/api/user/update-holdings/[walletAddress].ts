@@ -15,18 +15,20 @@ export default async function updateHoldings(req: NextApiRequest, res: NextApiRe
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    const { username, holdings } = req.body;
+    const { walletAddress } = req.query;
+    const { holdings } = req.body;
 
-    if (!username || !holdings) {
-        return res.status(400).json({ message: 'Username and holdings are required' });
+    if (!walletAddress || !holdings) {
+        return res.status(400).json({ message: 'walletAddress and holdings are required' });
     }
 
     try {
         const client = await pool.connect();
 
+        
         // Update the holdings for the given user
-        const updateQuery = 'UPDATE user_master SET holdings = $1 WHERE username = $2';
-        const result = await client.query(updateQuery, [holdings, username]);
+        const updateQuery = 'UPDATE user_master SET holdings = $1 WHERE wallet_address = $2';
+        const result = await client.query(updateQuery, [holdings, walletAddress]);
         client.release();
 
         if (result.rowCount === 0) {
