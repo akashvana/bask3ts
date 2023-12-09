@@ -15,17 +15,13 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
         return res.status(405).json({ message: 'Method Not Allowed' });
     }
 
-    const { walletAddress, sessionKey } = req.body;
-
-    if (!walletAddress || !sessionKey) {
-        return res.status(400).json({ message: 'walletAddress and sessionKey are required' });
-    }
+    const { walletAddress, sessionKey, basketName, amount, repeatDuration} = req.body;
 
     try {
         const client = await pool.connect();
 
         // Update the sessionKey and set sessionActive to true for the given user
-        const updateQuery = 'UPDATE user_master SET sessionKey = $1, sessionActive = true WHERE wallet_address = $2';
+        const updateQuery = 'UPDATE user_master SET session_key = $1, session_active = true WHERE wallet_address = $2';
         const result = await client.query(updateQuery, [sessionKey, walletAddress]);
         client.release();
 
@@ -34,8 +30,8 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const setQuery = 'INSERT INTO session_master (sessionKey, isActive) values ($1, $2)';
-        const result2 = await client.query(updateQuery, [sessionKey, true]);
+        const setQuery = 'INSERT INTO session_master (session_key, amount, basket_name, repeat_duration) values ($1, $2, $3, $4)';
+        const result2 = await client.query(setQuery, [sessionKey, amount, basketName, repeatDuration]);
 
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'session not created for user' });

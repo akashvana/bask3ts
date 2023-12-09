@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { SessionKeyManagerModule } from "@biconomy/modules";
 import { BiconomySmartAccountV2 } from "@biconomy/account"
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
-import usdcAbi from "@/utils/usdcAbi.json"
+import polygonAbi from "@/utils/polygonAbi.json"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -14,13 +14,15 @@ interface props {
 }
 
 const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
+  const amount = localStorage.getItem('amount')
+  const message = `Transfer ${amount} USDC`;
   const erc20Transfer = async () => {
     if (!address || !smartAccount || !address) {
       alert("Please connect wallet first");
       return;
     }
     try {
-      toast.info('Transferring 1 USDC to recipient...', {
+      toast.info('Transferring USDC to smart contract account', {
         position: "top-right",
         autoClose: 15000,
         hideProgressBar: false,
@@ -33,6 +35,8 @@ const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
       const dcaSessionValidationModule = "0x4559f7f0985c761d991B52a03Bd9c32857F73AeD";
       // get session key from local storage
       const sessionKeyPrivKey = window.localStorage.getItem("sessionPKey");
+      // store the session key to the database instead. 
+
       console.log("sessionKeyPrivKey", sessionKeyPrivKey);
       if (!sessionKeyPrivKey) {
         alert("Session key not found please create session");
@@ -52,8 +56,8 @@ const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
 
       const tokenContract = new ethers.Contract(
         // polygon mumbai usdc address
-        "0xdA5289fCAAF71d52a80A254da614a192b693e977",
-        usdcAbi,
+        "0x0000000000000000000000000000000000001010",
+        polygonAbi,
         provider
       );
       let decimals = 18;
@@ -63,10 +67,9 @@ const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
       } catch (error) {
         throw new Error("invalid token address supplied");
       }
-
       const { data } = await tokenContract.populateTransaction.transfer(
         "0x322Af0da66D00be980C7aa006377FCaaEee3BDFD", // receiver address
-        ethers.utils.parseUnits("1".toString(), decimals)
+        ethers.utils.parseUnits(amount, decimals)
       );
 
       // generate tx data to erc20 transfer
@@ -115,7 +118,7 @@ const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
     }
   }
   return(
-    <button onClick={erc20Transfer}>Transfer 1 USDC</button>
+    <button onClick={erc20Transfer}>Transfer {amount} USDC</button>
   )
 }
 

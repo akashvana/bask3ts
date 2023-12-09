@@ -24,12 +24,15 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
     try {
         const client = await pool.connect();
 
+        const updateUserQuery = 'UPDATE user_master SET session_key = $1, session_active = true WHERE wallet_address = $2';
+        const userResult = await client.query(updateUserQuery, [sessionKey, walletAddress]);
+
         // Update the sessionKey and set sessionActive to true for the given user
-        const updateQuery = 'UPDATE session_master SET basket_name = $2, amount = $3, lastTransactionDate = TO_CHAR(current_date, \'YYYY-MM-DD\'), repeatDuration = $4 WHERE sessionKey = $1';
+        const updateQuery = 'UPDATE session_master SET basket_name = $2, amount = $3, last_transaction_date = TO_CHAR(current_date, \'YYYY-MM-DD\'), repeat_duration = $4 WHERE session_key = $1';
         const result = await client.query(updateQuery, [sessionKey, basketName, amount, repeatDuration]);
         client.release();
 
-        if (result.rowCount === 0) {
+        if (userResult.rowCount === 0) {
             // No user was found with the given username
             return res.status(404).json({ message: 'User not found' });
         }

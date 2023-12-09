@@ -1,0 +1,63 @@
+/* Subscribe.module.css */
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw; /* Ensure the container takes the full viewport width */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* This will center the form */
+    background: #111; 
+  }
+  
+  .form {
+    display: flex;
+    flex-direction: column;
+    padding: 40px; /* Increase padding for a larger box */
+    max-width: 500px; /* Set a max width for larger screens */
+    width: 100%; /* Use full width on smaller screens */
+    background: #fff; /* White form background */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    border-radius: 8px;
+  }
+  
+  .formLabel {
+    font-size: 1.2rem; /* Increase font size */
+    color: #333; /* Darker font color for readability */
+    margin-bottom: 0.5rem;
+  }
+  
+  .input[type='number'] {
+    font-size: 1.4rem; /* Increase font size for inputs */
+    padding: 200px 25px; /* Increase padding for larger input boxes */
+    margin-bottom: 20px; /* Maintain space below each input */
+    border: 2px solid #ccc; /* Make border thicker for more prominence */
+    border-radius: 8px; /* Slightly rounded corners for input boxes */
+    -moz-appearance: textfield; /* Removes increment arrows */
+  }
+  
+  /* For Webkit browsers like Chrome and Safari */
+  .input[type='number']::-webkit-outer-spin-button,
+  .input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .subscribeButton {
+    padding: 15px 30px; /* Increase padding for a larger button */
+    font-size: 1.2rem; /* Larger font size for the button */
+    background: #4CAF50; /* Change to a green background */
+    color: #fff; /* White button text */
+    border: none;
+    border-radius: 20px; /* Rounded edges for the button */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px; /* Space above the button */
+  }
+  
+  .subscribeButton:hover {
+    background-color: #66BB6A; /* Lighter green on hover */
+  }

@@ -68,14 +68,14 @@ const CreateSession: React.FC<props> = ({ smartAccount, address, provider }) => 
         smartAccountAddress: address,
       });
 
+      const daysAfter = localStorage.getItem('numberOfDays')
+      console.log("days after: ", daysAfter)
       // create session key data
       const sessionKeyData = defaultAbiCoder.encode(
-        ["address", "address", "address", "uint256"],
+        ["address", "uint256"],
         [
-          sessionKeyEOA,
-          "0xdA5289fCAAF71d52a80A254da614a192b693e977", // erc20 token address
-          "0x322Af0da66D00be980C7aa006377FCaaEee3BDFD", // receiver address
-          ethers.utils.parseUnits("50".toString(), 6).toHexString(), // 50 usdc amount
+          sessionKeyEOA, // erc20 token address
+          daysAfter
         ]
       );
 
@@ -150,7 +150,7 @@ const CreateSession: React.FC<props> = ({ smartAccount, address, provider }) => 
       ) : (
         <button onClick={() => createSession(true)} >Enable and Create Session</button>
       )}
-      {isSessionActive && <ERC20Transfer smartAccount={smartAccount} provider={provider} address={address} />}
+      {/* {isSessionActive && <ERC20Transfer smartAccount={smartAccount} provider={provider} address={address} />} */}
     </div>
     
   )

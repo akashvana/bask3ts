@@ -1,4 +1,4 @@
-// pages/api/basket/[basketId].ts
+// pages/api/basket/fetch.ts
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Pool } from 'pg';
@@ -13,7 +13,9 @@ const pool = new Pool({
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === 'GET') {
-        const { basketName } = req.query;
+        let { basketName } = req.query;
+
+        //basketName = 'basket_1'
 
         // Ensure basketId is provided
         if (!basketName) {
