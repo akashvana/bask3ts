@@ -57,7 +57,7 @@ const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
       const tokenContract = new ethers.Contract(
         // polygon mumbai usdc address
         "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
-        polygonAbi,
+        usdcAbi,
         provider
       );
       let decimals = 18;

@@ -100,7 +100,7 @@ export default function Home() {
         <meta name="description" content="Build a dApp powered by session keys" />
       </Head>
       <main className={styles.main}>
-        <h1>De-mandate</h1>
+        <h1>D3-mandates</h1>
         <h2>Automate your purchase of crypto baskets </h2>
 
         {!basketData && <p>Loading basket data...</p>}
@@ -108,7 +108,7 @@ export default function Home() {
           <div className={styles.basketContainer} onClick={() => router.push('/subscribe')}>
             <h3>Basket Name: {basketData.basket_name}</h3>
             <p>ETH Holdings: {basketData.holdings.ETH}</p>
-            <p>BTC Holdings: {basketData.holdings.DAI}</p>
+            <p>WBTC Holdings: {basketData.holdings.DAI}</p>
           </div>
         )}
       

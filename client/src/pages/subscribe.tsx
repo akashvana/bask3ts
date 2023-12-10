@@ -13,6 +13,8 @@ import {
   BiconomyPaymaster,  
 } from '@biconomy/paymaster'
 import CreateSession from '@/components/CreateSession';
+import { PushAPI, CONSTANTS } from "@pushprotocol/restapi";
+import dotenv from 'dotenv'
 
 const Subscribe = () => {
     // Declare state variables
@@ -87,6 +89,21 @@ const Subscribe = () => {
           })
           const address = await biconomySmartAccount.getAccountAddress()
           setSmartAccount(biconomySmartAccount)
+          
+          
+        //   const user = await PushAPI.initialize(signer, {env: CONSTANTS.ENV.STAGING});
+        //   const privateKey = process.env.PRIVATE_KEY;
+        //   const wallet = new ethers.Wallet(privateKey);
+        //   const accountAddress = wallet.address;
+        //   const subscribeChannel = await user.notification.subscribe(`eip155:80001:${0x791B5D49c2B320a3E2dA2CBe1905356d2647746C}`);
+        //   const smartAccountCreationResponse = await accountAddress.channel.send(["*"], {
+        //     notification: {
+        //       title: "Smart Account created!!",
+        //       body: "You have successfully created your Smart Contract using Biconomy."
+        //     },
+        //     channel : "eip155:80001:0x791B5D49c2B320a3E2dA2CBe1905356d2647746C" // to send notif on polygon
+        //   });
+
           console.log({ address })
           setAddress(address)
           console.log({ biconomySmartAccount })

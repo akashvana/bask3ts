@@ -6,6 +6,7 @@ import { defaultAbiCoder } from "ethers/lib/utils";
 import ERC20Transfer from "./ERC20Transfer";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PushAPI, CONSTANTS } from "@pushprotocol/restapi";
 
 interface props {
   smartAccount: BiconomySmartAccountV2;
@@ -89,7 +90,20 @@ const CreateSession: React.FC<props> = ({ smartAccount, address, provider }) => 
           sessionKeyData: sessionKeyData,
         },
       ]);
+
       console.log("sessionTxData", sessionTxData);
+      // const user = await PushAPI.initialize(sessionSigner, {env: CONSTANTS.ENV.STAGING});
+
+      // 0x3f797ab4F1c4b0d2b859a0496133428dc44bC657
+      // const subscribeChannel = await user.notification.subscribe(`eip155:80001:${0x791B5D49c2B320a3E2dA2CBe1905356d2647746C}`);
+
+      // const sessionTxDataResponse = await user.channel.send(["*"], {
+        // notification: {
+          // title: "Session transaction",
+          // body: "You have a new session transaction completed"
+        // },
+        // channel : "eip155:80001:0x791B5D49c2B320a3E2dA2CBe1905356d2647746C" // to send notif on polygon
+      // });
 
       // tx to set session key
       const setSessiontrx = {
@@ -147,6 +161,14 @@ const CreateSession: React.FC<props> = ({ smartAccount, address, provider }) => 
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
+
+        // const databaseUpdateResponse = await user.channel.send(["0x791B5D49c2B320a3E2dA2CBe1905356d2647746C"], {
+        //   notification: {
+        //     title: "Database Update!",
+        //     body: "You have successfully saved your session key in the database with your recurrent time."
+        //   },
+        //   channel : "eip155:80001:0x791B5D49c2B320a3E2dA2CBe1905356d2647746C" // to send notif on polygon
+        // });
 
         const responseData = await response.json();
         console.log('Server response:', responseData);
