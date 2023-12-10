@@ -19,6 +19,7 @@
     "@biconomy/modules": "^3.1.1",
     "@biconomy/paymaster": "^3.1.1",
     "@nextui-org/react": "^2.2.9",
+    "@uniswap/v3-periphery": "^1.4.4",
     "bootstrap": "^5.3.2",
     "framer-motion": "^10.16.16",
     "next": "14.0.4",

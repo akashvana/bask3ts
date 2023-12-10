@@ -1,6 +1,11 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
 import { Pool } from 'pg';
+import { ethers } from 'ethers';
+import { abi as IUniswapV3RouterABI } from '@uniswap/v3-periphery/artifacts/contracts/interfaces/IUniswapV3Router.sol/IUniswapV3Router.json';
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const pool = new Pool({
   user: 'dev',
@@ -64,6 +69,41 @@ async function callSwapApi(coin: string, amount: number) {
     console.log(`Swap API called for ${coin}. Response:`, response.data);
   } catch (error) {
     console.error(`Error calling swap API for ${coin}:`, error || 'Unknown error');
+  }
+}
+
+async function swapUSDCForToken(amountIn: string, isEth: boolean ){
+  try{
+    const apiUrl = process.env.ALCHEMY_API_URL
+    const provider = new ethers.providers.JsonRpcProvider(apiUrl)
+    const uniswapRouterAddress = '0xE592427A0AEce92De3Edee1F18E0157C05861564'; // Uniswap V3 Router
+    const USDCAddress = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eb48';
+    const DAIAddress = '0x6B175474E89094C44Da98b954EedeAC495271d0F';
+    const WETHAddress = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
+
+    const dcaSessionValidationModule = "0x4559f7f0985c761d991B52a03Bd9c32857F73AeD"
+    let destinationToken
+    if(!isEth){
+      destinationToken = DAIAddress
+    }else{
+      destinationToken = WETHAddress
+    }
+
+    const uniswapRouter = new ethers.Contract(uniswapRouterAddress, IUniswapV3RouterABI, signer);
+    const signer = new ethers.Wallet(privateKey, provider);
+
+    const deadline = Math.floor(Date.now() / 1000) + 60 * 20; // 20 minutes from the current Unix time
+    const recipient = signer.address;
+    const amountOutMinimum = 0; // Set to 0 for simplicity, but should be calculated based on slippage
+    const path = [USDCAddress, isEth ? WETHAddress : DAIAddress]; // Path for the swap
+    const swapParams = {
+        deadline,
+        recipient,
+        amountIn,
+        amountOutMinimum,
+        path
+    };
+
   }
 }
 
