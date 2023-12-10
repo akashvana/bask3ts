@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { SessionKeyManagerModule } from "@biconomy/modules";
 import { BiconomySmartAccountV2 } from "@biconomy/account"
 import { DEFAULT_SESSION_KEY_MANAGER_MODULE  } from "@biconomy/modules";
-import polygonAbi from "@/utils/polygonAbi.json"
+import usdcAbi from "@/utils/usdcAbi.json"
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -56,7 +56,7 @@ const ERC20Transfer: React.FC<props> = ({ smartAccount, provider, address}) => {
 
       const tokenContract = new ethers.Contract(
         // polygon mumbai usdc address
-        "0x0000000000000000000000000000000000001010",
+        "0x9999f7Fea5938fD3b1E26A12c3f2fb024e194f97",
         polygonAbi,
         provider
       );

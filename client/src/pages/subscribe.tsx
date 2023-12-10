@@ -43,7 +43,34 @@ const Subscribe = () => {
         try {
           setLoading(true)
           const provider = new ethers.providers.Web3Provider(ethereum)
-          await provider.send("eth_requestAccounts", []);
+          const accounts = await provider.send("eth_requestAccounts", []);
+          const eoaAddress = await accounts[0]
+          localStorage.setItem('eoaAddress', eoaAddress);
+          console.log("This is the eoaAddress; ", eoaAddress)
+
+          const postBody = {
+            walletAddress: eoaAddress
+          };
+
+          try {
+            const response = await fetch('http://localhost:3000/api/user/create-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(postBody)
+            });
+    
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+    
+            const responseData = await response.json();
+            console.log('Server response:', responseData);
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+        }
+          
           const signer = provider.getSigner();
           const ownerShipModule = await ECDSAOwnershipValidationModule.create({
             signer: signer

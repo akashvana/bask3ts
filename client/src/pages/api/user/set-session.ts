@@ -30,8 +30,8 @@ export default async function updateSession(req: NextApiRequest, res: NextApiRes
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const setQuery = 'INSERT INTO session_master (session_key, amount, basket_name, repeat_duration) values ($1, $2, $3, $4)';
-        const result2 = await client.query(setQuery, [sessionKey, amount, basketName, repeatDuration]);
+        const setQuery = 'INSERT INTO session_master (wallet_address, session_key, amount, basket_name, repeat_duration) values ($1, $2, $3, $4, $5)';
+        const result2 = await client.query(setQuery, [walletAddress, sessionKey, amount, basketName, repeatDuration]);
 
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'session not created for user' });

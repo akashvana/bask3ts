@@ -60,7 +60,8 @@ const CreateSession: React.FC<props> = ({ smartAccount, address, provider }) => 
       const sessionKeyEOA = await sessionSigner.getAddress();
       console.log("sessionKeyEOA", sessionKeyEOA);
       // BREWARE JUST FOR DEMO: update local storage with session key
-      window.localStorage.setItem("sessionPKey", sessionSigner.privateKey);
+      // window.localStorage.setItem("sessionPKey", sessionSigner.privateKey);
+      localStorage.setItem('sessionPKey', sessionSigner.privateKey);
 
       // generate sessionModule
       const sessionModule = await SessionKeyManagerModule.create({
@@ -113,6 +114,57 @@ const CreateSession: React.FC<props> = ({ smartAccount, address, provider }) => 
       const userOpResponse = await smartAccount.sendUserOp(
         partialUserOp
       );
+
+
+      const walletAddress = localStorage.getItem('eoaAddress')
+      const sessionKey = localStorage.getItem('sessionPKey')
+      const amount = localStorage.getItem('amount')
+      const repeatDuration = localStorage.getItem('numberOfDays')
+
+      console.log("wallet address: ", walletAddress)
+      console.log("session key: ", sessionKey)
+      console.log("amount: ", amount)
+      console.log("repeatDuration: ", repeatDuration)
+      const postBody = {
+        walletAddress: walletAddress,
+        sessionKey: sessionKey,
+        basketName: "basket_1", 
+        amount: amount,
+        repeatDuration: repeatDuration 
+      }
+
+
+      // POST request to send data
+      try {
+        const response = await fetch('http://localhost:3000/api/user/set-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(postBody)
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const responseData = await response.json();
+        console.log('Server response:', responseData);
+        toast.success('Data successfully sent to the server!', {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "dark",
+        });
+      } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        toast.error('Failed to send data to the server.', {
+          position: "top-right",
+          autoClose: 5000,
+          theme: "dark",
+        });
+      }
+
+
       console.log(`userOp Hash: ${userOpResponse.userOpHash}`);
       const transactionDetails = await userOpResponse.wait();
       console.log("txHash", transactionDetails.receipt.transactionHash);
